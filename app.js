@@ -1,8 +1,8 @@
 // 1. Import the Supabase library directly via web CDN
-import { createClient } from 'https://jsdelivr.net'
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/+esm'
 
 // 2. Replace these with your actual keys from the Settings > API tab
-const SUPABASE_URL = 'https://ysrykjfdtlpjzxatadmo.supabase.co';
+const SUPABASE_URL = 'https://ysrykjfdtlpjzxatadmo.supabase.co/rest/v1/';
 const SUPABASE_ANON_KEY = 'sb_publishable_2d_cB4iFio1Rb_CZuFocyw_O_dpZSCO';
 
 // 3. Initialize the connection
