@@ -13,22 +13,29 @@ const photoInput = document.getElementById('photo-input');
 const uploadBtn = document.getElementById('upload-btn');
 const photoGallery = document.getElementById('photo-gallery');
 
+// ==========================================
 // 5. LIVE UPLOAD CONTROL LOGIC
+// ==========================================
 uploadBtn.addEventListener('click', async () => {
     const files = photoInput.files;
+    
+    // Safety check: Make sure they actually picked an image file
     if (files.length === 0) {
-        alert('Pick a beautiful photo first before hitting upload! ✨');
+        alert('Pick a beautiful photo first before hitting upload! (BAYOOOTTT)');
         return;
     }
 
-    const file = files[0];
+    // FIX: Grab the actual FIRST raw image file inside the list array container
+    const file = files[0]; 
+    
+    // Generate a clean unique name
     const uniqueFileName = `gallery_${Date.now()}_${file.name}`;
 
     try {
         uploadBtn.innerText = "Uploading...";
         uploadBtn.disabled = true;
 
-        // Push raw file directly up to the Supabase Storage Bucket
+        // Push the correct, individual raw file up to the Supabase Storage Bucket
         const { data, error } = await supabase.storage
             .from('photos')
             .upload(uniqueFileName, file);
@@ -48,7 +55,7 @@ uploadBtn.addEventListener('click', async () => {
 
     } catch (error) {
         console.error("Upload crashed:", error.message);
-        alert('Failed to send photo. Check if the bucket name is correct!');
+        alert('Upload failed! Double check that your Supabase Bucket name is exactly "photos".');
     } finally {
         uploadBtn.innerText = "Upload";
         uploadBtn.disabled = false;
