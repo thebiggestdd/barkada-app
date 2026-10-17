@@ -2,7 +2,7 @@
 import { createClient } from 'https://jsdelivr.net'
 
 // 2. Replace these with your actual keys from the Settings > API tab
-const SUPABASE_URL = 'ysrykjfdtlpjzxatadmo';
+const SUPABASE_URL = 'https://ysrykjfdtlpjzxatadmo.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_2d_cB4iFio1Rb_CZuFocyw_O_dpZSCO';
 
 // 3. Initialize the connection
