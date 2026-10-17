@@ -3,7 +3,7 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 
 // 2. Replace these with your actual keys from the Settings > API tab
 const SUPABASE_URL = 'https://ysrykjfdtlpjzxatadmo.supabase.co/rest/v1/';
-const SUPABASE_ANON_KEY = 'sb_publishable_2d_cB4iFio1Rb_CZuFocyw_O_dpZSCO';
+const SUPABASE_ANON_KEY = 'ssb_publishable_Q_XQKdq78SzHpIIOwLU68w_BZpDIbf1';
 
 // 3. Initialize the connection
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
