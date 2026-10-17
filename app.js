@@ -1,29 +1,81 @@
-// Target the HTML elements we need to interact with
+// 1. Import the Supabase library directly via web CDN
+import { createClient } from 'https://jsdelivr.net'
+
+// 2. Replace these with your actual keys from the Settings > API tab
+const SUPABASE_URL = 'ysrykjfdtlpjzxatadmo';
+const SUPABASE_ANON_KEY = 'sb_publishable_2d_cB4iFio1Rb_CZuFocyw_O_dpZSCO';
+
+// 3. Initialize the connection
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// 4. Target your HTML elements
 const photoInput = document.getElementById('photo-input');
 const uploadBtn = document.getElementById('upload-btn');
 const photoGallery = document.getElementById('photo-gallery');
 
-// Listen for a click on the upload button
-uploadBtn.addEventListener('click', () => {
-    // Check if the user actually picked a file
-    const file = photoInput.files[0];
-    
-    if (!file) {
-        alert('Please select a photo first!');
+// 5. LIVE UPLOAD CONTROL LOGIC
+uploadBtn.addEventListener('click', async () => {
+    const files = photoInput.files;
+    if (files.length === 0) {
+        alert('Pick a beautiful photo first before hitting upload! ✨');
         return;
     }
 
-    // Generate a temporary local URL for the selected image file
-    const imageObjectURL = URL.createObjectURL(file);
+    const file = files[0];
+    const uniqueFileName = `gallery_${Date.now()}_${file.name}`;
 
-    // Create a new image element dynamically
-    const newImage = document.createElement('img');
-    newImage.src = imageObjectURL;
-    newImage.alt = "Friend's Uploaded Photo";
+    try {
+        uploadBtn.innerText = "Uploading...";
+        uploadBtn.disabled = true;
 
-    // Insert the new image card into our gallery grid
-    photoGallery.appendChild(newImage);
+        // Push raw file directly up to the Supabase Storage Bucket
+        const { data, error } = await supabase.storage
+            .from('photos')
+            .upload(uniqueFileName, file);
 
-    // Clear the input field so you can upload another one
-    photoInput.value = '';
+        if (error) throw error;
+
+        // Fetch the permanent public link for the image card
+        const { data: urlData } = supabase.storage
+            .from('photos')
+            .getPublicUrl(uniqueFileName);
+
+        // Display instantly on the feed screen
+        displayImageInGrid(urlData.publicUrl);
+
+        photoInput.value = '';
+        alert('Photo successfully dropped into the cloud space! 🚀');
+
+    } catch (error) {
+        console.error("Upload crashed:", error.message);
+        alert('Failed to send photo. Check if the bucket name is correct!');
+    } finally {
+        uploadBtn.innerText = "Upload";
+        uploadBtn.disabled = false;
+    }
 });
+
+// 6. GALLERY RENDER LOGIC
+function displayImageInGrid(imageUrl) {
+    const newImage = document.createElement('img');
+    newImage.src = imageUrl;
+    newImage.alt = "Barkada Shared Memory";
+    photoGallery.insertBefore(newImage, photoGallery.firstChild);
+}
+
+// Automatically load every single image inside the folder when the app starts up
+async function loadEntireGallery() {
+    try {
+        const { data, error } = await supabase.storage.from('photos').list();
+        if (error) throw error;
+
+        for (const file of data) {
+            const { data: urlData } = supabase.storage.from('photos').getPublicUrl(file.name);
+            displayImageInGrid(urlData.publicUrl);
+        }
+    } catch (error) {
+        console.warn("Gallery load state setup placeholder:", error.message);
+    }
+}
+
+loadEntireGallery();
