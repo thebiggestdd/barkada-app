@@ -3,26 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Friends Gallery</title>
+    <title>Barkada Daily Photo Drops</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="app-container">
+        <header>
+            <h1>Barkada Shared Memories</h1>
+            <p>Drop your daily photos here live! 🚀</p>
+        </header>
 
-    <header>
-        <h1>Our Daily Drops</h1>
-        <p>A simple space to share our day-to-day photos ✨</p>
-    </header>
+        <div class="upload-section">
+            <input type="text" id="name-input" placeholder="Type your name here..." autocomplete="off">
+            
+            <div class="file-select-row">
+                <input type="file" id="photo-input" accept="image/*">
+                <button id="upload-btn">Upload</button>
+            </div>
+        </div>
 
-    <main>
-        <section class="upload-container">
-            <input type="file" id="photo-input" accept="image/*">
-            <button id="upload-btn">Upload</button>
-        </section>
-
-        <section class="gallery-container" id="photo-gallery">
-            <!-- Photos will populate beautifully right here -->
-        </section>
-    </main>
+        <div id="photo-gallery" class="gallery-grid"></div>
+    </div>
 
     <script type="module" src="app.js"></script>
 </body>
