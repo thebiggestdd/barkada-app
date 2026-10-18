@@ -1,88 +1,173 @@
-// 1. Import the Supabase library directly via web CDN
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/+esm'
 
-// 2. Replace these with your actual keys from the Settings > API tab
 const SUPABASE_URL = 'https://ysrykjfdtlpjzxatadmo.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_Q_XQKdq78SzHpIIOwLU68w_BZpDIbf1';
 
-// 3. Initialize the connection
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// 4. Target your HTML elements
 const photoInput = document.getElementById('photo-input');
+const nameInput = document.getElementById('name-input');
 const uploadBtn = document.getElementById('upload-btn');
 const photoGallery = document.getElementById('photo-gallery');
 
-// ==========================================
-// 5. LIVE UPLOAD CONTROL LOGIC
-// ==========================================
+// 1. UPLOAD IMAGE & SAVE TO DATABASE
 uploadBtn.addEventListener('click', async () => {
     const files = photoInput.files;
     
-    // Safety check: Make sure they actually picked an image file
     if (files.length === 0) {
         alert('Pick a beautiful photo first before hitting upload! (BAYOOOTTT)');
         return;
     }
 
-    // FIX: Grab the actual FIRST raw image file inside the list array container
+    if (!nameInput.value.trim()) {
+        alert('Please write your name so your barkada knows who uploaded it!');
+        return;
+    }
+
     const file = files[0]; 
-    
-    // Generate a clean unique name
     const uniqueFileName = `gallery_${Date.now()}_${file.name}`;
 
     try {
         uploadBtn.innerText = "Uploading...";
         uploadBtn.disabled = true;
 
-        // Push the correct, individual raw file up to the Supabase Storage Bucket
-        const { data, error } = await supabase.storage
+        // Step A: Upload image to Storage Bucket
+        const { data: storageData, error: storageError } = await supabase.storage
             .from('photos')
             .upload(uniqueFileName, file);
 
-        if (error) throw error;
+        if (storageError) throw storageError;
 
-        // Fetch the permanent public link for the image card
+        // Step B: Get the public URL path
         const { data: urlData } = supabase.storage
             .from('photos')
             .getPublicUrl(uniqueFileName);
 
-        // Display instantly on the feed screen
-        displayImageInGrid(urlData.publicUrl);
+        const publicUrl = urlData.publicUrl;
+
+        // Step C: Save record to 'user_inputs' table
+        const { data: dbData, error: dbError } = await supabase
+            .from('user_inputs')
+            .insert([
+                { 
+                    url: publicUrl, 
+                    uploader_name: nameInput.value.trim() 
+                }
+            ]);
+
+        if (dbError) throw dbError;
 
         photoInput.value = '';
+        nameInput.value = ''; 
         alert('Photo successfully dropped into the cloud space! 🚀');
 
     } catch (error) {
         console.error("Upload crashed:", error.message);
-        alert('Upload failed! Double check that your Supabase Bucket name is exactly "photos".');
+        alert('Upload failed! Check that your table is named "user_inputs" and RLS is off.');
     } finally {
         uploadBtn.innerText = "Upload";
         uploadBtn.disabled = false;
     }
 });
 
-// 6. GALLERY RENDER LOGIC
-function displayImageInGrid(imageUrl) {
+// 2. DELETE RECORD FROM DATABASE & FILE FROM STORAGE
+async function deletePhoto(id, imageUrl) {
+    if (!confirm("Are you sure your barkada wants to delete this photo permanently?")) {
+        return;
+    }
+
+    try {
+        const filename = imageUrl.split('/').pop();
+
+        // Step A: Delete row from the database table
+        const { error: dbError } = await supabase
+            .from('user_inputs')
+            .delete()
+            .eq('id', id);
+
+        if (dbError) throw dbError;
+
+        // Step B: Delete asset file from bucket storage
+        const { error: storageError } = await supabase.storage
+            .from('photos')
+            .remove([filename]);
+
+        if (storageError) throw storageError;
+
+        alert('Photo cleared completely!');
+
+    } catch (error) {
+        console.error("Deletion crashed:", error.message);
+        alert('Failed to completely delete the image asset.');
+    }
+}
+
+// 3. GENERATE PHOTO CARDS ON THE SCREEN
+function displayImageInGrid(id, imageUrl, uploaderName, createdAt) {
+    const cardContainer = document.createElement('div');
+    cardContainer.className = 'photo-card';
+    cardContainer.id = `photo-${id}`;
+
     const newImage = document.createElement('img');
     newImage.src = imageUrl;
     newImage.alt = "Barkada Shared Memory";
-    photoGallery.insertBefore(newImage, photoGallery.firstChild);
+
+    const uploadDate = new Date(createdAt).toLocaleDateString(undefined, {
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+
+    const detailsDiv = document.createElement('div');
+    detailsDiv.className = 'photo-details';
+    detailsDiv.innerText = `Dropped by: ${uploaderName}\n(${uploadDate})`;
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = 'delete-btn';
+    deleteBtn.innerText = 'Delete';
+    deleteBtn.addEventListener('click', () => deletePhoto(id, imageUrl));
+
+    cardContainer.appendChild(newImage);
+    cardContainer.appendChild(detailsDiv);
+    cardContainer.appendChild(deleteBtn);
+
+    photoGallery.insertBefore(cardContainer, photoGallery.firstChild);
 }
 
-// Automatically load every single image inside the folder when the app starts up
+// 4. FETCH DATA FROM DATABASE TABLE
 async function loadEntireGallery() {
     try {
-        const { data, error } = await supabase.storage.from('photos').list();
+        photoGallery.innerHTML = '';
+
+        const { data, error } = await supabase
+            .from('user_inputs')
+            .select('*')
+            .order('created_at', { ascending: true });
+
         if (error) throw error;
 
-        for (const file of data) {
-            const { data: urlData } = supabase.storage.from('photos').getPublicUrl(file.name);
-            displayImageInGrid(urlData.publicUrl);
+        if (data) {
+            for (const record of data) {
+                displayImageInGrid(record.id, record.url, record.uploader_name, record.created_at);
+            }
         }
     } catch (error) {
-        console.warn("Gallery load state setup placeholder:", error.message);
+        console.warn("Gallery load issue:", error.message);
     }
 }
+
+// 5. LIVE REFRESH REALTIME LISTENER
+supabase
+  .channel('live_user_inputs')
+  .on(
+    'postgres_changes', 
+    { event: '*', schema: 'public', table: 'user_inputs' }, 
+    (payload) => {
+        console.log('Realtime shift detected:', payload);
+        loadEntireGallery();
+    }
+  )
+  .subscribe();
 
 loadEntireGallery();
