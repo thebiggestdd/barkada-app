@@ -2,44 +2,57 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    font-family: 'Lucida Grande', 'Lucida Sans Unicode', Verdana, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
 body {
-    background-color: #f0f4f8;
-    color: #333333;
-    padding: 20px;
+    background-color: #fafafa; /* Instagram's signature crisp, light gray background */
+    color: #262626;
+    padding: 0;
     display: flex;
     justify-content: center;
 }
 
 .app-container {
     width: 100%;
-    max-width: 1100px;
+    max-width: 600px; /* Forces a perfect, clean vertical mobile feed size on PC monitors */
+    padding: 0 15px 50px 15px;
 }
 
-header {
+/* Minimal Top Navigation */
+.insta-nav {
     text-align: center;
-    margin-bottom: 30px;
+    padding: 20px 0;
+    border-bottom: 1px solid #dbdbdb;
+    background-color: #ffffff;
+    margin-bottom: 24px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
 }
 
-header h1 {
-    color: #4a7c9d;
-    font-size: 2.2rem;
-    margin-bottom: 5px;
+.insta-nav .logo-text {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #4a7c9d; /* Keeps your custom soft pastel slate blue accent color */
+    letter-spacing: -0.5px;
 }
 
-header p {
-    color: #709bb6;
-    font-size: 1rem;
+.insta-nav .sub-text {
+    font-size: 0.75rem;
+    color: #8e8e8e;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 2px;
 }
 
+/* Sleek Minimalist Post Controls Box */
 .upload-section {
     background-color: #ffffff;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    margin-bottom: 30px;
+    border: 1px solid #dbdbdb;
+    border-radius: 3px;
+    padding: 16px;
+    margin-bottom: 24px;
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -47,42 +60,39 @@ header p {
 
 #name-input {
     width: 100%;
-    padding: 12px;
-    border: 2px solid #d0e1fd;
-    border-radius: 8px;
-    font-size: 1rem;
+    padding: 9px 12px;
+    border: 1px solid #dbdbdb;
+    border-radius: 3px;
+    font-size: 0.9rem;
     outline: none;
-    background-color: #f9fbfd;
+    background-color: #fafafa;
 }
 
 #name-input:focus {
-    border-color: #7fb5ff;
+    border: 1px solid #a8a8a8;
 }
 
 .file-select-row {
     display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
+    justify-content: space-between;
     align-items: center;
+    gap: 10px;
 }
 
 #photo-input {
-    flex: 1;
-    min-width: 200px;
-    padding: 8px;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+    color: #8e8e8e;
 }
 
 #upload-btn {
-    background-color: #7fb5ff;
-    color: white;
+    background-color: #7fb5ff; /* Soft pastel blue button */
+    color: #ffffff;
     border: none;
-    padding: 12px 24px;
-    border-radius: 8px;
-    font-weight: bold;
-    font-size: 1rem;
+    padding: 7px 16px;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 0.9rem;
     cursor: pointer;
-    transition: background-color 0.2s;
 }
 
 #upload-btn:hover {
@@ -90,55 +100,105 @@ header p {
 }
 
 #upload-btn:disabled {
-    background-color: #cbd5e1;
+    background-color: #b2d4ff;
     cursor: not-allowed;
 }
 
-.gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 20px;
+/* Instagram Feed Timeline */
+.instagram-feed {
+    display: flex;
+    flex-direction: column;
+    gap: 24px; /* Space between timeline posts */
 }
 
+/* Individual Post Card Structure */
 .photo-card {
     background-color: #ffffff;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
-    border: 1px solid #e1ecf7;
+    border: 1px solid #dbdbdb;
+    border-radius: 3px;
     display: flex;
     flex-direction: column;
 }
 
+/* User Account Header Bar Above Image */
+.post-header {
+    display: flex;
+    align-items: center;
+    padding: 14px;
+    border-bottom: 1px solid #f2f2f2;
+}
+
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: #e1ecf7;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.8rem;
+    color: #4a7c9d;
+    border: 1px solid #cbdbee;
+}
+
+.user-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #262626;
+}
+
+/* The Shared Media Photo */
 .photo-card img {
     width: 100%;
     height: auto;
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 1 / 1; /* Locks image frames to sharp square 1:1 format box shapes */
     object-fit: cover;
-    border-bottom: 1px solid #e1ecf7;
 }
 
-.photo-details {
-    padding: 12px;
-    font-size: 0.85rem;
-    color: #555555;
-    line-height: 1.4;
-    flex-grow: 1;
+/* Bottom Caption Details Block Area */
+.post-footer {
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
 }
 
-.delete-btn {
-    background-color: #fff0f0;
-    color: #e15252;
+.caption-line {
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.caption-line .bold-user {
+    font-weight: 600;
+    margin-right: 6px;
+}
+
+.post-time {
+    font-size: 0.7rem;
+    color: #8e8e8e;
+    text-transform: uppercase;
+    letter-spacing: 0.2px;
+}
+
+/* Subtle, Out-of-the-way Interaction Buttons */
+.delete-container {
+    border-top: 1px solid #f2f2f2;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.insta-delete-btn {
+    background: none;
     border: none;
-    border-top: 1px solid #fce3e3;
-    padding: 10px;
-    font-size: 0.85rem;
-    font-weight: bold;
+    color: #ed4956; /* Soft Instagram heart pink/red */
+    padding: 12px 14px;
+    font-size: 0.8rem;
+    font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.2s;
-    width: 100%;
 }
 
-.delete-btn:hover {
-    background-color: #fde4e4;
+.insta-delete-btn:hover {
+    opacity: 0.7;
 }
