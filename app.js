@@ -2,7 +2,7 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 
 // FIX: Swapped out the CDN link and restored your unique database project URL
 const SUPABASE_URL = 'https://ysrykjfdtlpjzxatadmo.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_Q_XQKdq78SzHpIIOwLU68w_BZpDIbf1';
+const SUPABASE_ANON_KEY = 'sb_publishable_abeJniBwMmGIsaKR_0XxYA_S1GGbim_';
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
