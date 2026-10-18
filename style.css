@@ -104,11 +104,10 @@ body {
     cursor: not-allowed;
 }
 
-/* Instagram Feed Timeline */
 .instagram-feed {
-    display: flex;
-    flex-direction: column;
-    gap: 24px; /* Space between timeline posts */
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px; /* Adjusts the spacing between your grid photos */
 }
 
 /* Individual Post Card Structure */
