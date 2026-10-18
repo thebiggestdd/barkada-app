@@ -1,6 +1,6 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/+esm'
 
-const SUPABASE_URL = 'https://ysrykjfdtlpjzxatadmo.supabase.co';
+const SUPABASE_URL = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/+esm';
 const SUPABASE_ANON_KEY = 'sb_publishable_Q_XQKdq78SzHpIIOwLU68w_BZpDIbf1';
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -102,15 +102,40 @@ async function deletePhoto(id, imageUrl) {
     }
 }
 
-// 3. GENERATE PHOTO CARDS ON THE SCREEN
+// 3. GENERATE PHOTO CARDS ON THE SCREEN (INSTAGRAM STYLE)
 function displayImageInGrid(id, imageUrl, uploaderName, createdAt) {
+    // Create main post container card
     const cardContainer = document.createElement('div');
     cardContainer.className = 'photo-card';
     cardContainer.id = `photo-${id}`;
 
+    // User Header Bar (placed above image)
+    const headerDiv = document.createElement('div');
+    headerDiv.className = 'post-header';
+    
+    const avatar = document.createElement('div');
+    avatar.className = 'user-avatar';
+    avatar.innerText = uploaderName.charAt(0).toUpperCase(); // Uses first letter as profile icon
+    
+    const nameSpan = document.createElement('div');
+    nameSpan.className = 'user-name';
+    nameSpan.innerText = uploaderName;
+    
+    headerDiv.appendChild(avatar);
+    headerDiv.appendChild(nameSpan);
+
+    // Photo Image Element
     const newImage = document.createElement('img');
     newImage.src = imageUrl;
-    newImage.alt = "Barkada Shared Memory";
+    newImage.alt = "Barkada Post";
+
+    // Bottom Caption and Timestamp Container
+    const footerDiv = document.createElement('div');
+    footerDiv.className = 'post-footer';
+
+    const captionParagraph = document.createElement('p');
+    captionParagraph.className = 'caption-line';
+    captionParagraph.innerHTML = `<span class="bold-user">${uploaderName}</span> dropped a new memory.`;
 
     const uploadDate = new Date(createdAt).toLocaleDateString(undefined, {
         month: 'short',
@@ -119,18 +144,29 @@ function displayImageInGrid(id, imageUrl, uploaderName, createdAt) {
         minute: '2-digit'
     });
 
-    const detailsDiv = document.createElement('div');
-    detailsDiv.className = 'photo-details';
-    detailsDiv.innerText = `Dropped by: ${uploaderName}\n(${uploadDate})`;
+    const timeDiv = document.createElement('div');
+    timeDiv.className = 'post-time';
+    timeDiv.innerText = uploadDate;
+
+    footerDiv.appendChild(captionParagraph);
+    footerDiv.appendChild(timeDiv);
+
+    // Subtle Delete Button Section
+    const deleteSection = document.createElement('div');
+    deleteSection.className = 'delete-container';
 
     const deleteBtn = document.createElement('button');
-    deleteBtn.className = 'delete-btn';
-    deleteBtn.innerText = 'Delete';
+    deleteBtn.className = 'insta-delete-btn';
+    deleteBtn.innerText = 'Remove Post';
     deleteBtn.addEventListener('click', () => deletePhoto(id, imageUrl));
+    
+    deleteSection.appendChild(deleteBtn);
 
+    // Assemble everything in order
+    cardContainer.appendChild(headerDiv);
     cardContainer.appendChild(newImage);
-    cardContainer.appendChild(detailsDiv);
-    cardContainer.appendChild(deleteBtn);
+    cardContainer.appendChild(footerDiv);
+    cardContainer.appendChild(deleteSection);
 
     photoGallery.insertBefore(cardContainer, photoGallery.firstChild);
 }
