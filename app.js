@@ -1,7 +1,7 @@
-import { createClient } from 'https://jsdelivr.net'
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/+esm'
 
 // FIX: Swapped out the CDN link and restored your unique database project URL
-const SUPABASE_URL = 'https://supabase.co';
+const SUPABASE_URL = 'https://ysrykjfdtlpjzxatadmo.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_Q_XQKdq78SzHpIIOwLU68w_BZpDIbf1';
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
