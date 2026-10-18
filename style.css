@@ -15,7 +15,7 @@ body {
 
 .app-container {
     width: 100%;
-    max-width: 600px; /* Forces a perfect, clean vertical mobile feed size on PC monitors */
+    max-width: 1200px; /* Widen this so 3 or 4 columns can fit side-by-side on your PC! */
     padding: 0 15px 50px 15px;
 }
 
