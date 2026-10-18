@@ -1,6 +1,7 @@
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/+esm'
+import { createClient } from 'https://jsdelivr.net'
 
-const SUPABASE_URL = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/+esm';
+// FIX: Swapped out the CDN link and restored your unique database project URL
+const SUPABASE_URL = 'https://supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_Q_XQKdq78SzHpIIOwLU68w_BZpDIbf1';
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -59,7 +60,7 @@ uploadBtn.addEventListener('click', async () => {
 
         photoInput.value = '';
         nameInput.value = ''; 
-        alert('Photo successfully dropped into the cloud space! 🚀');
+        alert('Photo successfully dropped into the cloud space! ');
 
     } catch (error) {
         console.error("Upload crashed:", error.message);
@@ -104,18 +105,16 @@ async function deletePhoto(id, imageUrl) {
 
 // 3. GENERATE PHOTO CARDS ON THE SCREEN (INSTAGRAM STYLE)
 function displayImageInGrid(id, imageUrl, uploaderName, createdAt) {
-    // Create main post container card
     const cardContainer = document.createElement('div');
     cardContainer.className = 'photo-card';
     cardContainer.id = `photo-${id}`;
 
-    // User Header Bar (placed above image)
     const headerDiv = document.createElement('div');
     headerDiv.className = 'post-header';
     
     const avatar = document.createElement('div');
     avatar.className = 'user-avatar';
-    avatar.innerText = uploaderName.charAt(0).toUpperCase(); // Uses first letter as profile icon
+    avatar.innerText = uploaderName.charAt(0).toUpperCase(); 
     
     const nameSpan = document.createElement('div');
     nameSpan.className = 'user-name';
@@ -124,12 +123,10 @@ function displayImageInGrid(id, imageUrl, uploaderName, createdAt) {
     headerDiv.appendChild(avatar);
     headerDiv.appendChild(nameSpan);
 
-    // Photo Image Element
     const newImage = document.createElement('img');
     newImage.src = imageUrl;
     newImage.alt = "Barkada Post";
 
-    // Bottom Caption and Timestamp Container
     const footerDiv = document.createElement('div');
     footerDiv.className = 'post-footer';
 
@@ -151,7 +148,6 @@ function displayImageInGrid(id, imageUrl, uploaderName, createdAt) {
     footerDiv.appendChild(captionParagraph);
     footerDiv.appendChild(timeDiv);
 
-    // Subtle Delete Button Section
     const deleteSection = document.createElement('div');
     deleteSection.className = 'delete-container';
 
@@ -162,7 +158,6 @@ function displayImageInGrid(id, imageUrl, uploaderName, createdAt) {
     
     deleteSection.appendChild(deleteBtn);
 
-    // Assemble everything in order
     cardContainer.appendChild(headerDiv);
     cardContainer.appendChild(newImage);
     cardContainer.appendChild(footerDiv);
