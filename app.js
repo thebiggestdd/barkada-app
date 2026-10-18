@@ -47,7 +47,7 @@ uploadBtn.addEventListener('click', async () => {
 
         // Step C: Save record to 'user_inputs' table
         const { data: dbData, error: dbError } = await supabase
-            .from('public.user_inputs')
+            .from('user_inputs')
             .insert([
                 { 
                     url: publicUrl, 
@@ -63,7 +63,7 @@ uploadBtn.addEventListener('click', async () => {
 
     } catch (error) {
         console.error("Upload crashed:", error.message);
-        alert('Upload failed! Check that your table is named "public.user_inputs" and RLS is off.');
+        alert('Upload failed! Check that your table is named "user_inputs" and RLS is off.');
     } finally {
         uploadBtn.innerText = "Upload";
         uploadBtn.disabled = false;
@@ -81,7 +81,7 @@ async function deletePhoto(id, imageUrl) {
 
         // Step A: Delete row from the database table
         const { error: dbError } = await supabase
-            .from('public.user_inputs')
+            .from('user_inputs')
             .delete()
             .eq('id', id);
 
@@ -177,7 +177,7 @@ async function loadEntireGallery() {
         photoGallery.innerHTML = '';
 
         const { data, error } = await supabase
-            .from('public.user_inputs')
+            .from('user_inputs')
             .select('*')
             .order('created_at', { ascending: true });
 
